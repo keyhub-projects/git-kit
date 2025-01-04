@@ -1,0 +1,6 @@
+rootProject.name = 'git-kit'
+include 'core'
+include 'apt'
+include 'core-sandbox'
+include 'starter'
+include 'starter-sandbox'
