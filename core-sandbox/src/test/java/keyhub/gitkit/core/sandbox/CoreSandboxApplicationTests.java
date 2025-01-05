@@ -1,10 +1,10 @@
-package keyhub.gitkit.sandbox;
+package keyhub.gitkit.core.sandbox;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class SandboxApplicationTests {
+class CoreSandboxApplicationTests {
 
     @Test
     void contextLoads() {
