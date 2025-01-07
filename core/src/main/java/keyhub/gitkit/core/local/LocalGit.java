@@ -36,7 +36,7 @@ import java.util.Optional;
 
 public interface LocalGit {
 	static LocalGit init() {
-		return AbstractLocalGit.init();
+		return SimpleLocalGit.init();
 	}
 	Optional<RevCommit> findCommitByHash(String hash);
 	List<DiffEntry> findDiffs(RevCommit oldCommit, RevCommit newCommit);

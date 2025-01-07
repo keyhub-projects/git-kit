@@ -28,7 +28,6 @@ import keyhub.gitkit.core.annotation.GitOperationAspect;
 import keyhub.gitkit.core.local.LocalGit;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jgit.api.Git;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
@@ -75,7 +74,7 @@ class SimpleOriginGitTest {
                 System.getenv("PASSWORD"),
                 "main"
         );
-        utd = SimpleOriginGit.init();
+        utd = OriginGit.init();
     }
 
     @Test

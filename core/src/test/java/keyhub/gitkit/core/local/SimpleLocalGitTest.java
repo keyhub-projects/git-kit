@@ -49,12 +49,12 @@ import static org.mockito.Mockito.when;
 class SimpleLocalGitTest {
 
     static String repoPath;
-    static AbstractLocalGit utd;
+    static LocalGit utd;
     static MockedStatic<GitOperationAspect> mockAspect;
 
     @BeforeAll
     public static void initTest() {
-        utd = AbstractLocalGit.init();
+        utd = LocalGit.init();
         mockAspect = mockStatic(GitOperationAspect.class);
         String workingDir = System.getProperty("user.dir"); // 현재 작업 디렉토리
         if (workingDir.endsWith("core")) {
@@ -82,8 +82,8 @@ class SimpleLocalGitTest {
     public void 정상_findCommitByHash_조회() throws IOException {
         try (Git git = Git.open(new File(repoPath))) {
             when(git()).thenReturn(git);
-            Optional<RevCommit> oldOption = utd.findCommitByHash(git(), "b0f86eb8");
-            Optional<RevCommit> newOption = utd.findCommitByHash(git(), "c481f436");
+            Optional<RevCommit> oldOption = utd.findCommitByHash("b0f86eb8");
+            Optional<RevCommit> newOption = utd.findCommitByHash("c481f436");
 
             assertNotNull(oldOption.orElse(null));
             assertNotNull(newOption.orElse(null));
@@ -94,12 +94,12 @@ class SimpleLocalGitTest {
     public void 정상_findDiffMapperFiles_작동() throws IOException {
         try (Git git = Git.open(new File(repoPath))) {
             when(git()).thenReturn(git);
-            Optional<RevCommit> oldOption = utd.findCommitByHash(git(), "b0f86eb8");
-            Optional<RevCommit> newOption = utd.findCommitByHash(git(), "c481f436");
+            Optional<RevCommit> oldOption = utd.findCommitByHash("b0f86eb8");
+            Optional<RevCommit> newOption = utd.findCommitByHash("c481f436");
             assertNotNull(oldOption.orElse(null));
             assertNotNull(newOption.orElse(null));
 
-            List<CommitFileDiff> result = utd.findDiffMapperFiles(git(), oldOption.get(), newOption.get());
+            List<CommitFileDiff> result = utd.findDiffMapperFiles(oldOption.get(), newOption.get());
 
             assertNotNull(result);
             assertNotEquals(0, result.size());

@@ -29,9 +29,6 @@ import org.eclipse.jgit.api.Git;
 import static keyhub.gitkit.core.annotation.GitOperationAspect.git;
 
 public abstract class AbstractOriginGit implements OriginGit {
-	static AbstractOriginGit init(){
-		return SimpleOriginGit.init();
-	}
 
 	public int fetch(OriginGitConfigMap config){
 		return fetch(git(), config);
