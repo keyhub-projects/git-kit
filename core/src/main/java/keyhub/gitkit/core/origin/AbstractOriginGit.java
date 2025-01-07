@@ -24,14 +24,28 @@
 
 package keyhub.gitkit.core.origin;
 
-import lombok.Builder;
+import org.eclipse.jgit.api.Git;
 
-@Builder
-public record OriginGitConfigMap(
-	String remoteUrl,
-	String localPath,
-	String username,
-	String password,
-	String branchName
-) {
+import static keyhub.gitkit.core.annotation.GitOperationAspect.git;
+
+public abstract class AbstractOriginGit implements OriginGit {
+	static AbstractOriginGit init(){
+		return SimpleOriginGit.init();
+	}
+
+	public int fetch(OriginGitConfigMap config){
+		return fetch(git(), config);
+	}
+	abstract int fetch(Git git, OriginGitConfigMap config);
+
+	public int pull(OriginGitConfigMap config){
+		return pull(git(), config);
+	}
+	abstract int pull(Git git, OriginGitConfigMap config);
+
+
+	public String push(OriginGitConfigMap config){
+		return push(git(), config);
+	}
+	abstract String push(Git git, OriginGitConfigMap config);
 }

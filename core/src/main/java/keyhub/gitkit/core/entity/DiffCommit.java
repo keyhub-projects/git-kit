@@ -22,16 +22,10 @@
  * SOFTWARE.
  */
 
-package keyhub.gitkit.core.origin;
+package keyhub.gitkit.core.entity;
 
-import lombok.Builder;
-
-@Builder
-public record OriginGitConfigMap(
-	String remoteUrl,
-	String localPath,
-	String username,
-	String password,
-	String branchName
-) {
+public interface DiffCommit<ID> extends Entity<ID> {
+    <R extends CommitHistory<?>> R commitHistory();
+    String recentContents();
+    String commitContents();
 }

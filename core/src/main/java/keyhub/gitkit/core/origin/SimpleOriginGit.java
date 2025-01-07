@@ -28,40 +28,28 @@ import keyhub.gitkit.core.IllegalGitStateException;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.PullResult;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.transport.FetchResult;
-import org.eclipse.jgit.transport.PushResult;
-import org.eclipse.jgit.transport.RemoteRefUpdate;
-import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
+import org.eclipse.jgit.transport.*;
 
 import java.io.File;
 
-public class SimpleOriginGit implements OriginGit {
-	private final String remoteUrl;
-	private final String localPath;
-	private final UsernamePasswordCredentialsProvider credentialsProvider;
+public class SimpleOriginGit extends AbstractOriginGit {
 
-	private SimpleOriginGit(String remoteUrl, String localPath,
-		UsernamePasswordCredentialsProvider credentialsProvider) {
-		this.remoteUrl = remoteUrl;
-		this.localPath = localPath;
-		this.credentialsProvider = credentialsProvider;
+	private SimpleOriginGit() {
 	}
 
-	static SimpleOriginGit of(OriginGitConfigMap config) {
-		return new SimpleOriginGit(
-			config.remoteUrl(),
-			config.localPath(),
-			new UsernamePasswordCredentialsProvider(config.username(), config.password())
-		);
+	protected static SimpleOriginGit init() {
+		return new SimpleOriginGit();
 	}
 
 	@Override
-	public int cloneOrigin() {
+	public int cloneOrigin(OriginGitConfigMap config) {
 		try {
 			Git git = Git.cloneRepository()
-				.setURI(this.remoteUrl)
-				.setDirectory(new File(localPath))
-				.setCredentialsProvider(credentialsProvider)
+				.setURI(config.remoteUrl())
+				.setDirectory(new File(config.localPath()))
+				.setCredentialsProvider(
+						new UsernamePasswordCredentialsProvider(config.username(), config.password())
+				)
 				.call();
 			if (git != null) {
 				try (git) {
@@ -75,7 +63,8 @@ public class SimpleOriginGit implements OriginGit {
 	}
 
 	@Override
-	public int fetch(Git git) {
+	public int fetch(Git git, OriginGitConfigMap config) {
+		CredentialsProvider credentialsProvider = new UsernamePasswordCredentialsProvider(config.username(), config.password());
 		try {
 			FetchResult result = git.fetch()
 				.setCredentialsProvider(credentialsProvider)
@@ -87,11 +76,12 @@ public class SimpleOriginGit implements OriginGit {
 	}
 
 	@Override
-	public int pull(Git git, String branchName) {
+	public int pull(Git git, OriginGitConfigMap config) {
+		CredentialsProvider credentialsProvider = new UsernamePasswordCredentialsProvider(config.username(), config.password());
 		try {
 			PullResult result = git.pull()
 				.setCredentialsProvider(credentialsProvider)
-				.setRemoteBranchName(branchName)
+				.setRemoteBranchName(config.branchName())
 				.call();
 			if (result.getMergeResult() == null || result.getMergeResult().getMergedCommits() == null) {
 				return 0;
@@ -104,8 +94,9 @@ public class SimpleOriginGit implements OriginGit {
 	}
 
 	@Override
-	public String push(Git git, String branchName){
+	public String push(Git git, OriginGitConfigMap config){
 		Iterable<PushResult> results;
+		CredentialsProvider credentialsProvider = new UsernamePasswordCredentialsProvider(config.username(), config.password());
 		try {
 			results =  git.push()
 				.setCredentialsProvider(credentialsProvider)

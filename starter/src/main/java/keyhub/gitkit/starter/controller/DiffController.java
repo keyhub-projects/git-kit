@@ -22,8 +22,29 @@
  * SOFTWARE.
  */
 
-package keyhub.gitkit.core.entity;
+package keyhub.gitkit.starter.controller;
 
-public interface CommitQueryDiff<ID> extends CommitDiff<ID> {
+import keyhub.gitkit.starter.service.diff.DiffService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+@RequiredArgsConstructor
+@RequestMapping("/diff")
+@RestController
+public class DiffController {
+
+	private final DiffService service;
+
+	@GetMapping("file/{oldId}/{newId}")
+	public int saveDiffFile(@PathVariable(name = "oldId") String oldId, @PathVariable(name = "newId") String newId){
+		return service.saveDiffs(oldId, newId);
+	}
+
+	@GetMapping("query/{oldId}/{newId}")
+	public int saveDiffQuery(@PathVariable(name = "oldId") String oldId, @PathVariable(name = "newId") String newId){
+		return service.saveDiffQueries(oldId, newId);
+	}
 }

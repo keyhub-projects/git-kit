@@ -1,0 +1,22 @@
+@startuml
+set namespaceSeparator ::
+
+class DiffController
+class SyncController
+class DiffService
+class SyncService
+interface CommitRepository
+class core::LocalGit
+class core::OriginGit
+
+DiffController -->  DiffService
+DiffService --> CommitRepository
+DiffService --> core::LocalGit
+DiffService --> core::OriginGit
+
+SyncController --> SyncService
+SyncService --> CommitRepository
+SyncService --> core::LocalGit
+SyncService --> core::OriginGit
+
+@enduml

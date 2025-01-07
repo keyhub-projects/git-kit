@@ -43,7 +43,6 @@ public class SimpleAbstractGitOperationAspect extends AbstractGitOperationAspect
 	@Around("@annotation(gitOperation)")
 	public Object manageGitResource(ProceedingJoinPoint joinPoint, GitOperation gitOperation) {
 		try {
-
 			String repoPath = "";
 			String name = gitOperation.repoPath();
 			GitOperation.RepoPathFrom repoPathFrom = gitOperation.repoPathFrom();
@@ -53,7 +52,7 @@ public class SimpleAbstractGitOperationAspect extends AbstractGitOperationAspect
 			Object target = joinPoint.getTarget();
 			switch (repoPathFrom) {
 				case FIELD -> {
-					Field field = target.getClass().getField(repoPath);
+					Field field = target.getClass().getField(name);
 					field.setAccessible(true);
 					repoPath = field.get(target).toString();
 				}

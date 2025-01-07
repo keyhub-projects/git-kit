@@ -49,12 +49,12 @@ import static org.mockito.Mockito.when;
 class SimpleLocalGitTest {
 
     static String repoPath;
-    static LocalGit utd;
+    static AbstractLocalGit utd;
     static MockedStatic<GitOperationAspect> mockAspect;
 
     @BeforeAll
     public static void initTest() {
-        utd = LocalGit.init();
+        utd = AbstractLocalGit.init();
         mockAspect = mockStatic(GitOperationAspect.class);
         String workingDir = System.getProperty("user.dir"); // 현재 작업 디렉토리
         if (workingDir.endsWith("core")) {

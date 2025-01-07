@@ -22,16 +22,22 @@
  * SOFTWARE.
  */
 
-package keyhub.gitkit.core.origin;
+package keyhub.gitkit.starter.component;
 
-import lombok.Builder;
+import keyhub.gitkit.core.local.LocalGit;
+import keyhub.gitkit.core.origin.OriginGit;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-@Builder
-public record OriginGitConfigMap(
-	String remoteUrl,
-	String localPath,
-	String username,
-	String password,
-	String branchName
-) {
+@Configuration
+public class GitComponents {
+    @Bean
+    public LocalGit localGit() {
+        return LocalGit.init();
+    }
+
+    @Bean
+    public OriginGit originGit() {
+        return OriginGit.init();
+    }
 }
