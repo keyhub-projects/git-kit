@@ -19,9 +19,10 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.eclipse.jgit:org.eclipse.jgit:7.1.0.202411261347-r'
+    api 'org.eclipse.jgit:org.eclipse.jgit:7.1.0.202411261347-r'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-aop'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     compileOnly 'org.projectlombok:lombok'

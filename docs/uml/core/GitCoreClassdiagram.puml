@@ -1,0 +1,59 @@
+@startuml
+
+interface LocalGit {
+    static LocalGit init();
+    Optional<RevCommit> findCommitByHash(String hash);
+    List<DiffEntry> findDiffs(RevCommit oldCommit, RevCommit newCommit);
+    List<DiffEntry> findDiffMappers(RevCommit oldCommit, RevCommit newCommit);
+    List<CommitFileDiff> findDiffFiles(RevCommit oldCommit, RevCommit newCommit);
+    List<CommitFileDiff> findDiffMapperFiles(RevCommit oldCommit, RevCommit newCommit);
+    String readFileContents(ObjectId id);
+    int stageAll();
+    int stageAll(String path);
+    String commit(String commitMessage);
+    String reset(ResetCommand.ResetType mode);
+    String resetHard();
+    boolean isConflicted();
+    int resolveConflicts(CheckoutCommand.Stage side);
+    int resolveConflictsWithLocals();
+    int resolveConflictsWithOrigins();
+}
+abstract AbstractLocalGit
+
+class SimpleLocalGit {
+    SimpleAbstractGitOperationAspect aspect
+}
+LocalGit <|.. AbstractLocalGit
+AbstractLocalGit <|-- SimpleLocalGit
+SimpleAbstractGitOperationAspect <- SimpleLocalGit
+
+interface GitOperationAspect{
+    static Git git()
+}
+abstract AbstractGitOperationAspect
+class SimpleAbstractGitOperationAspect
+annotation GitOperation{
+    String repoPath()
+	RepoPathFrom repoPathFrom() default RepoPathFrom.PARAMETER
+	enum RepoPathFrom { FIELD, PARAMETER }
+}
+
+GitOperation <. SimpleAbstractGitOperationAspect
+GitOperationAspect <|.. AbstractGitOperationAspect
+AbstractGitOperationAspect <|-- SimpleAbstractGitOperationAspect
+
+interface OriginGit {
+    static OriginGit init();
+	int cloneOrigin(OriginGitConfigMap config);
+	int fetch(OriginGitConfigMap config);
+	int pull(OriginGitConfigMap config);
+	String push(OriginGitConfigMap config);
+}
+abstract AbstractOriginGit
+class SimpleOriginGit
+
+OriginGit <|.. AbstractOriginGit
+AbstractOriginGit <|-- SimpleOriginGit
+
+
+@enduml

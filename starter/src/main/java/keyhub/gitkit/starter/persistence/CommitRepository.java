@@ -22,16 +22,13 @@
  * SOFTWARE.
  */
 
-package keyhub.gitkit.core.origin;
+package keyhub.gitkit.starter.persistence;
 
-import lombok.Builder;
+import keyhub.gitkit.core.entity.CommitHistory;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-@Builder
-public record OriginGitConfigMap(
-	String remoteUrl,
-	String localPath,
-	String username,
-	String password,
-	String branchName
-) {
+import java.util.Optional;
+
+public interface CommitRepository<ID> extends JpaRepository<CommitHistory<ID>, ID> {
+    Optional<CommitHistory<ID>> findByCommitPoint(String commitPoint);
 }

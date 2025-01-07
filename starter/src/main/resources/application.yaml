@@ -22,4 +22,6 @@
 # SOFTWARE.
 #
 
-spring.application.name=core
+spring:
+  application:
+    name: starter

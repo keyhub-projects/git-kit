@@ -48,7 +48,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-public class SimpleLocalGit implements LocalGit {
+public class SimpleLocalGit extends AbstractLocalGit {
 
 	private final SimpleAbstractGitOperationAspect aspect;
 
@@ -60,7 +60,7 @@ public class SimpleLocalGit implements LocalGit {
 		this.aspect = new SimpleAbstractGitOperationAspect();
 	}
 
-	static SimpleLocalGit init() {
+	protected static SimpleLocalGit init() {
 		return new SimpleLocalGit();
 	}
 

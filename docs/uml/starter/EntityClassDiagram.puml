@@ -1,0 +1,53 @@
+@startuml
+set namespaceSeparator ::
+
+interface core::Entity<ID>{
+    ID id()
+}
+interface core::CommitHistory<ID> {
+    <R extends DiffCommit<?>> R diffCommits()
+    <R extends DiffQueryCommit<?>> R diffQueryCommits()
+	<DID, T extends DiffCommit<DID>> void add(T diff)
+	<DID, T extends DiffCommit<DID>> void addAll(List<T> diffs)
+}
+interface core::DiffCommit<ID> {
+    <R extends CommitHistory<?>> R commitHistory()
+    String recentContents()
+    String commitContents()
+}
+interface core::DiffQueryCommit<ID>
+
+core::Entity <|-- core::CommitHistory
+core::Entity <|-- core::DiffCommit
+core::DiffCommit <|-- core::DiffQueryCommit
+core::CommitHistory -{ core::DiffCommit
+
+class starter::CommitHistoryEntity {
+    ID id
+    List<DiffCommitEntity> commitDiffs
+}
+core::CommitHistory <|. starter::CommitHistoryEntity
+starter::CommitHistoryEntity -{ starter::DiffCommitEntity
+starter::CommitHistoryEntity -{ starter::DiffQueryCommitEntity
+
+class starter::DiffCommitEntity {
+    ID id
+    String commitContents
+    String recentContents
+    CommitHistoryEntity<?> commitHistory
+}
+core::DiffCommit <|. starter::DiffCommitEntity
+
+class starter::DiffQueryCommitEntity {
+    ID id
+    String recentContents;
+    String commitContents;
+    String queryPath;
+    String approveYn;
+    String changeType;
+    CommitHistoryEntity<?> commitHistory;
+}
+core::DiffQueryCommit <|. starter::DiffQueryCommitEntity
+
+
+@enduml

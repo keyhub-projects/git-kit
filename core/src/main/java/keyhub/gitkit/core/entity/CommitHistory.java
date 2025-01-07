@@ -24,6 +24,14 @@
 
 package keyhub.gitkit.core.entity;
 
+import java.util.List;
+
 public interface CommitHistory<ID> extends Entity<ID> {
-	<R extends CommitDiff<?>> R commitDiff();
+	<R extends DiffCommit<?>> R diffCommits();
+
+	<R extends DiffQueryCommit<?>> void diffQueryCommits();
+
+	<DID, T extends DiffCommit<DID>> void addAll(List<T> diffs);
+
+	<DID, T extends DiffCommit<DID>> void add(T diff);
 }

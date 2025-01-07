@@ -24,29 +24,16 @@
 
 package keyhub.gitkit.core.origin;
 
-import org.eclipse.jgit.api.Git;
-
-import static keyhub.gitkit.core.annotation.GitOperationAspect.git;
-
 public interface OriginGit {
-	static OriginGit of(OriginGitConfigMap configMap){
-		return SimpleOriginGit.of(configMap);
+	static OriginGit init(){
+		return SimpleOriginGit.init();
 	}
 
-	int cloneOrigin();
+	int cloneOrigin(OriginGitConfigMap config);
 
-	default int fetch(){
-		return fetch(git());
-	}
-	int fetch(Git git);
+	int fetch(OriginGitConfigMap config);
 
-	default int pull(String branchName){
-		return pull(git(), branchName);
-	}
-	int pull(Git git, String branchName);
+	int pull(OriginGitConfigMap config);
 
-	default String push(String branchName){
-		return push(git(), branchName);
-	}
-	String push(Git git, String branchName);
+	String push(OriginGitConfigMap config);
 }

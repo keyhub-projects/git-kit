@@ -22,22 +22,19 @@
  * SOFTWARE.
  */
 
-package keyhub.gitkit.core.local;
+package keyhub.gitkit.core.origin;
 
 import keyhub.gitkit.core.annotation.GitOperationAspect;
-import keyhub.gitkit.core.value.CommitFileDiff;
+import keyhub.gitkit.core.local.LocalGit;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.revwalk.RevCommit;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
 
 import static keyhub.gitkit.core.annotation.GitOperationAspect.git;
 import static org.junit.jupiter.api.Assertions.*;
@@ -46,15 +43,17 @@ import static org.mockito.Mockito.when;
 
 @Slf4j
 @EnableAspectJAutoProxy
-class SimpleLocalGitTest {
+class SimpleOriginGitTest {
 
+    static OriginGit utd;
     static String repoPath;
-    static LocalGit utd;
+    static LocalGit localGit;
     static MockedStatic<GitOperationAspect> mockAspect;
+    static OriginGitConfigMap config;
 
-    @BeforeAll
-    public static void initTest() {
-        utd = LocalGit.init();
+    @BeforeEach
+    public void initTest() {
+        localGit = LocalGit.init();
         mockAspect = mockStatic(GitOperationAspect.class);
         String workingDir = System.getProperty("user.dir"); // 현재 작업 디렉토리
         if (workingDir.endsWith("core")) {
@@ -62,48 +61,30 @@ class SimpleLocalGitTest {
         } else {
             repoPath = "./sample";
         }
+        // todo test 위치도 build 아래로 옮겨서 할 것
+        // todo 경량 git repo 컨테이너를 띄워 테스트하고,
+        //  설정값을 하드코딩 결정적으로 수행해도 되도록 수정할 것
+        log.info("username: " + System.getenv("USERNAME"));
+        log.info("password: " + System.getenv("PASSWORD"));
+        // gradle test 시 환경변수
+        config = new OriginGitConfigMap(
+                "https://github.com/keyhub-projects/sample.git",
+                repoPath,
+                System.getenv("USERNAME"),
+                System.getenv("PASSWORD"),
+                "main"
+        );
+        utd = OriginGit.init();
     }
 
     @Test
-    public void 정상_gitRepo_동작() {
-        assertNotNull(repoPath);
-        assertNotEquals("", repoPath);
-    }
-
-    @Test
-    public void 정상_Git_동작() throws IOException {
+    public void 정상_fetch_동작() throws IOException {
         try (Git git = Git.open(new File(repoPath))) {
             when(git()).thenReturn(git);
-            assertNotNull(git());
+            int result = utd.fetch(config);
+            assertTrue(result > -1);
+            log.info("Fetch result: {}", result);
         }
     }
 
-    @Test
-    public void 정상_findCommitByHash_조회() throws IOException {
-        try (Git git = Git.open(new File(repoPath))) {
-            when(git()).thenReturn(git);
-            Optional<RevCommit> oldOption = utd.findCommitByHash("b0f86eb8");
-            Optional<RevCommit> newOption = utd.findCommitByHash("c481f436");
-
-            assertNotNull(oldOption.orElse(null));
-            assertNotNull(newOption.orElse(null));
-        }
-    }
-
-    @Test
-    public void 정상_findDiffMapperFiles_작동() throws IOException {
-        try (Git git = Git.open(new File(repoPath))) {
-            when(git()).thenReturn(git);
-            Optional<RevCommit> oldOption = utd.findCommitByHash("b0f86eb8");
-            Optional<RevCommit> newOption = utd.findCommitByHash("c481f436");
-            assertNotNull(oldOption.orElse(null));
-            assertNotNull(newOption.orElse(null));
-
-            List<CommitFileDiff> result = utd.findDiffMapperFiles(oldOption.get(), newOption.get());
-
-            assertNotNull(result);
-            assertNotEquals(0, result.size());
-            log.warn(result.toString());
-        }
-    }
 }
